@@ -3,14 +3,16 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <imgui/imgui_impl_glfw.h>
-#include <imgui/imgui_impl_opengl3.h>
 #include <numbers>
 #include <iostream>
 
 #include "utilities/stb_image.h"
 #include "shader.h"
 #include "camera.h"
+
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 float vertices[] =
 {
@@ -66,8 +68,8 @@ float triangleVertices[] = {
 };
 
 float mixFactor = 0.2f;
-float screenWidth = 800.0f;
-float screenHeight = 600.0f;
+float screenWidth = 1200;
+float screenHeight = 720.0f;
 
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = screenWidth / 2;
@@ -115,10 +117,13 @@ int main(int argc, char* argv) {
 		return -1;
 	}
 
+	glViewport(100, 100, 300, 300);
+
 	// initialize dear imgui
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	
 	// setup platform/renderer bindings
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -164,7 +169,7 @@ int main(int argc, char* argv) {
 	while (!glfwWindowShouldClose(window)) {
 		processInput(window);
 
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// feed inputs to imgui, start new frame
