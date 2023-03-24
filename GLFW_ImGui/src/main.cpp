@@ -13,6 +13,7 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
+#include <map>
 
 float vertices[] =
 {
@@ -117,7 +118,7 @@ int main(int argc, char* argv) {
 		return -1;
 	}
 
-	glViewport(100, 100, 300, 300);
+	//glViewport(100, 100, 300, 300);
 
 	// initialize dear imgui
 	IMGUI_CHECKVERSION();
@@ -165,6 +166,15 @@ int main(int argc, char* argv) {
 	// enable depth testing
 	glEnable(GL_DEPTH_TEST);
 
+	struct SceneObject {
+		float position[2] = { 0.0f, 0.0f };
+		float rotation = 0.0f;
+		float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	};
+
+	std::map<int, SceneObject> objects;
+	int numObjects = 0;
+
 	// application loop
 	while (!glfwWindowShouldClose(window)) {
 		processInput(window);
@@ -177,25 +187,40 @@ int main(int argc, char* argv) {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
+		glBindVertexArray(triangleVAO);
+
 		colorShader.Use();
 
-		// set up the gui
-		ImGui::Begin("Triangle Position/Color");
-		static float rotation = 0.0;
-		ImGui::SliderFloat("rotation", &rotation, 0, 2 * std::numbers::pi);
-		static float translation[] = { 0.0, 0.0 };
-		ImGui::SliderFloat2("position", translation, -1.0, 1.0);
-		static float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		ImGui::ColorEdit3("color", color);
-
-		//ImGui::ShowDemoWindow();
-
-		// pass the parameters to the shader
-		colorShader.SetVec3("color", 1, glm::vec3(color[0], color[1], color[2]));
+		ImGui::Begin("Scene Heirarchy");
+		if (ImGui::Button("Create Triangle")) {
+			ImGui::SameLine();
+			ImGui::Text("clicked");
+			SceneObject object;
+			objects[numObjects] = object;
+			++numObjects;
+		}
 		ImGui::End();
 
-		glBindVertexArray(triangleVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		for (int i = 0; i < numObjects; ++i) {
+			// set up the gui
+			ImGui::Begin("Triangle " + i);
+			ImGui::SliderFloat("rotation", &objects[i].rotation, 0, 2 * std::numbers::pi);
+			ImGui::SliderFloat2("position", objects[i].position, -1.0, 1.0);
+			ImGui::ColorEdit3("color", objects[i].color);
+
+			glm::mat4 model = glm::mat4(1.0f);
+			
+			model = glm::translate(model, glm::vec3(objects[i].position[0], objects[i].position[1], 0.0f));
+			model = glm::rotate(model, objects[i].rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+			colorShader.SetMat4("model", 1, model);
+			colorShader.SetVec3("color", 1, glm::vec3(objects[i].color[0], objects[i].color[1], objects[i].color[2]));
+
+			glDrawArrays(GL_TRIANGLES, 0, 3);
+
+			ImGui::End();
+		}
+
+		ImGui::ShowDemoWindow();
 
 		// render imgui to the screen
 		ImGui::Render();
