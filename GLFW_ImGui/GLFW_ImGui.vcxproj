@@ -169,11 +169,14 @@
     <ClInclude Include="src\imgui\imstb_textedit.h" />
     <ClInclude Include="src\imgui\imstb_truetype.h" />
     <ClInclude Include="src\shader.h" />
+    <ClInclude Include="src\texture.h" />
     <ClInclude Include="src\utilities\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\color.frag" />
-    <None Include="src\color.vert" />
+    <None Include="src\shaders\basic.frag" />
+    <None Include="src\shaders\basic.vert" />
+    <None Include="src\shaders\color.frag" />
+    <None Include="src\shaders\color.vert" />
     <None Include="src\imgui\imgui.ini" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
