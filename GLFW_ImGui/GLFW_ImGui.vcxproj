@@ -154,11 +154,13 @@
     <ClCompile Include="src\imgui\imgui_tables.cpp" />
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\object_manager.cpp" />
+    <ClCompile Include="src\ui.cpp" />
     <ClCompile Include="src\utilities\glad.c" />
     <ClCompile Include="src\utilities\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\camera.h" />
+    <ClInclude Include="src\headers\camera.h" />
     <ClInclude Include="src\imgui\imconfig.h" />
     <ClInclude Include="src\imgui\imgui.h" />
     <ClInclude Include="src\imgui\imgui_impl_glfw.h" />
@@ -168,8 +170,10 @@
     <ClInclude Include="src\imgui\imstb_rectpack.h" />
     <ClInclude Include="src\imgui\imstb_textedit.h" />
     <ClInclude Include="src\imgui\imstb_truetype.h" />
-    <ClInclude Include="src\shader.h" />
-    <ClInclude Include="src\texture.h" />
+    <ClInclude Include="src\headers\object_manager.h" />
+    <ClInclude Include="src\headers\shader.h" />
+    <ClInclude Include="src\headers\texture.h" />
+    <ClInclude Include="src\headers\ui.h" />
     <ClInclude Include="src\utilities\stb_image.h" />
   </ItemGroup>
   <ItemGroup>

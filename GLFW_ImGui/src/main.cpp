@@ -8,9 +8,11 @@
 #include <map>
 
 #include "utilities/stb_image.h"
-#include "shader.h"
-#include "texture.h"
-#include "camera.h"
+#include "headers/shader.h"
+#include "headers/texture.h"
+#include "headers/camera.h"
+#include "headers/ui.h"
+#include "headers/object_manager.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -227,7 +229,10 @@ int main(int argc, char* argv) {
 		glm::mat4 projection;
 		projection = glm::perspective(glm::radians(camera.Zoom), screenWidth / screenHeight, 0.1f, 100.0f);
 
+		UI::ShowSceneHeirarchy();
+		/*
 		ImGui::Begin("Scene Heirarchy");
+		
 		if (ImGui::Button("New Triangle")) {
 			SceneObject object;
 			objects2D[numObjects2D] = object;
@@ -239,9 +244,48 @@ int main(int argc, char* argv) {
 			++numObjects3D;
 		}
 		ImGui::End();
+		*/
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, container.GetDiffuse());
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, container.GetSpecular());
+
+#pragma region RenderObjects
+		ObjectMap::iterator itr = ObjectManager::GetBegin();
+		while (itr != ObjectManager::GetEnd()) {
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, ObjectManager::GetPosition(itr));
+			model = glm::rotate(model, ObjectManager::GetRotation(itr), glm::vec3(0.0f, 0.0f, 1.0f));
+
+			switch (ObjectManager::GetType(itr)) {
+			case ObjectType::TRIANGLE:
+				glBindVertexArray(triangleVAO);
+
+				colorShader.Use();
+				colorShader.SetMat4("model", model);
+				colorShader.SetVec3("color", ObjectManager::GetColor(itr));
+
+				glDrawArrays(GL_TRIANGLES, 0, 3);
+				break;
+			case ObjectType::CUBE:
+				glBindVertexArray(cubeVAO);
+
+				basicShader.Use();
+				basicShader.SetMat4("view", view);
+				basicShader.SetMat4("projection", projection);
+				basicShader.SetVec3("viewPos", camera.Position);
+				basicShader.SetMat4("model", model);
+
+				glDrawArrays(GL_TRIANGLES, 0, 36);
+				break;
+			}
+			++itr;
+		}
+#pragma endregion RenderObjects
 
 #pragma region Render2D
-		glBindVertexArray(triangleVAO);
+		/*glBindVertexArray(triangleVAO);
 
 		colorShader.Use();
 
@@ -262,16 +306,11 @@ int main(int argc, char* argv) {
 			glDrawArrays(GL_TRIANGLES, 0, 3);
 
 			ImGui::End();
-		}
+		}*/
 #pragma endregion Render2D
 
 #pragma region Render3D
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, container.GetDiffuse());
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, container.GetSpecular());
-
-		glBindVertexArray(cubeVAO);
+		/*glBindVertexArray(cubeVAO);
 
 		basicShader.Use();
 		basicShader.SetMat4("view", view);
@@ -293,7 +332,7 @@ int main(int argc, char* argv) {
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 
 			ImGui::End();
-		}
+		}*/
 #pragma endregion Render3D
 
 		ImGui::ShowDemoWindow();
