@@ -175,7 +175,7 @@ int main(int argc, char* argv) {
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 #pragma endregion Binding
 
@@ -191,10 +191,10 @@ int main(int argc, char* argv) {
 	basicShader.SetInt("material.diffuse", 0);
 	basicShader.SetInt("material.specular", 1);
 	basicShader.SetInt("material.shininess", 32.0f);
-	basicShader.SetVec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
-	basicShader.SetVec3("dirLight.ambient", glm::vec3(0.1f));
+	basicShader.SetVec3("dirLight.direction", glm::vec3(-1.0f, 0.0f, 0.0f));
+	basicShader.SetVec3("dirLight.ambient", glm::vec3(0.5f));
 	basicShader.SetVec3("dirLight.diffuse", glm::vec3(0.2f));
-	basicShader.SetVec3("dirLight.specular", glm::vec3(0.9f));
+	basicShader.SetVec3("dirLight.specular", glm::vec3(0.1f));
 #pragma endregion Shader
 
 #pragma region Rendering
@@ -232,21 +232,11 @@ int main(int argc, char* argv) {
 		UI::ShowMenu();
 		UI::ShowSceneHeirarchy();
 		UI::ShowInspector();
-		/*
-		ImGui::Begin("Scene Heirarchy");
-		
-		if (ImGui::Button("New Triangle")) {
-			SceneObject object;
-			objects2D[numObjects2D] = object;
-			++numObjects2D;
-		}
-		if (ImGui::Button("New Cube")) {
-			SceneObject object;
-			objects3D[numObjects3D] = object;
-			++numObjects3D;
-		}
-		ImGui::End();
-		*/
+
+		ImGui::BeginMainMenuBar();
+		std::string viewDirection = "(" + std::to_string(camera.Front.x) + ", " + std::to_string(camera.Front.y) + ", " + std::to_string(camera.Front.z) + ")";
+		ImGui::Text(viewDirection.c_str());
+		ImGui::EndMainMenuBar();
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, container.GetDiffuse());
@@ -285,57 +275,6 @@ int main(int argc, char* argv) {
 			++itr;
 		}
 #pragma endregion RenderObjects
-
-#pragma region Render2D
-		/*glBindVertexArray(triangleVAO);
-
-		colorShader.Use();
-
-		for (int i = 0; i < numObjects2D; ++i) {
-			// set up the gui
-			std::string name = "Triangle " + std::to_string(i);
-			ImGui::Begin(name.c_str());
-			ImGui::SliderFloat("rotation", &objects2D[i].rotation, 0, 2 * std::numbers::pi);
-			ImGui::SliderFloat3("position", objects2D[i].position, -1.0, 1.0);
-			ImGui::ColorEdit3("color", objects2D[i].color);
-			
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(objects2D[i].position[0], objects2D[i].position[1], objects2D[i].position[2]));
-			model = glm::rotate(model, objects2D[i].rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-			colorShader.SetMat4("model", model);
-			colorShader.SetVec3("color", glm::vec3(objects2D[i].color[0], objects2D[i].color[1], objects2D[i].color[2]));
-
-			glDrawArrays(GL_TRIANGLES, 0, 3);
-
-			ImGui::End();
-		}*/
-#pragma endregion Render2D
-
-#pragma region Render3D
-		/*glBindVertexArray(cubeVAO);
-
-		basicShader.Use();
-		basicShader.SetMat4("view", view);
-		basicShader.SetMat4("projection", projection);
-		basicShader.SetVec3("viewPos", camera.Position);
-
-		for (int i = 0; i < numObjects3D; ++i) {
-			// cube gui
-			std::string name = "Cube " + std::to_string(i);
-			ImGui::Begin(name.c_str());
-			ImGui::SliderFloat("rotation", &objects3D[i].rotation, 0, 2 * std::numbers::pi);
-			ImGui::SliderFloat3("position", objects3D[i].position, -1.0, 1.0);
-
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(objects3D[i].position[0], objects3D[i].position[1], objects3D[i].position[2]));
-			model = glm::rotate(model, objects3D[i].rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-			basicShader.SetMat4("model", model);
-
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-
-			ImGui::End();
-		}*/
-#pragma endregion Render3D
 
 		ImGui::ShowDemoWindow();
 
@@ -390,21 +329,18 @@ void scroll_callback(GLFWwindow* window, double xOffset, double yOffset) {
 }
 
 void processInput(GLFWwindow* window) {
-	/*if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window, true);
-	}*/
 	if (captureMouse) {
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-			camera.ProcessKeyboard(FORWARD, deltaTime);
+			camera.ProcessKeyboard(CAMERA_MOVEMENT::FORWARD, deltaTime);
 		}
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-			camera.ProcessKeyboard(BACKWARD, deltaTime);
+			camera.ProcessKeyboard(CAMERA_MOVEMENT::BACKWARD, deltaTime);
 		}
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-			camera.ProcessKeyboard(LEFT, deltaTime);
+			camera.ProcessKeyboard(CAMERA_MOVEMENT::LEFT, deltaTime);
 		}
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-			camera.ProcessKeyboard(RIGHT, deltaTime);
+			camera.ProcessKeyboard(CAMERA_MOVEMENT::RIGHT, deltaTime);
 		}
 	}
 }

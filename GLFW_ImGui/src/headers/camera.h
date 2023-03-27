@@ -7,7 +7,7 @@
 #include <vector>
 
 // defines several possible options for camera movement
-enum CAMERA_MOVEMENT {
+enum class CAMERA_MOVEMENT {
 	FORWARD,
 	BACKWARD,
 	LEFT,
@@ -70,16 +70,16 @@ public:
 		float velocity = MovementSpeed * deltaTime;
 
 		switch (direction) {
-		case FORWARD:
+		case CAMERA_MOVEMENT::FORWARD:
 			Position += Front * velocity;
 			break;
-		case BACKWARD:
+		case CAMERA_MOVEMENT::BACKWARD:
 			Position -= Front * velocity;
 			break;
-		case LEFT:
+		case CAMERA_MOVEMENT::LEFT:
 			Position -= Right * velocity;
 			break;
-		case RIGHT:
+		case CAMERA_MOVEMENT::RIGHT:
 			Position += Right * velocity;
 			break;
 		}
