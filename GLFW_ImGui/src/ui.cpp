@@ -2,6 +2,7 @@
 
 namespace UI {
 	static int selectedId = -1;
+	static bool showOverlay = false;
 
 	void ShowMenu() {
 		if (ImGui::BeginMainMenuBar()) {
@@ -18,13 +19,8 @@ namespace UI {
 				if (ImGui::MenuItem("Redo", "CTRL+Y")) {}
 				ImGui::EndMenu();
 			}
-			if (ImGui::BeginMenu("Create SceneObject")) {
-				ImGui::SeparatorText("2D");
-				if (ImGui::MenuItem("Triangle"))
-					ObjectManager::AddObjectToScene(ObjectType::TRIANGLE, "Triangle");
-				ImGui::SeparatorText("3D");
-				if (ImGui::MenuItem("Cube"))
-					ObjectManager::AddObjectToScene(ObjectType::CUBE, "Cube");
+			if (ImGui::BeginMenu("View")) {
+				ImGui::MenuItem("Debug Overlay", NULL, &showOverlay);
 				ImGui::EndMenu();
 			}
 			ImGui::EndMainMenuBar();
@@ -34,7 +30,8 @@ namespace UI {
 	void ShowSceneHeirarchy() {
 		ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoMove |
 			ImGuiWindowFlags_NoCollapse |
-			ImGuiWindowFlags_NoResize;
+			ImGuiWindowFlags_NoResize |
+			ImGuiWindowFlags_MenuBar;
 
 		const ImGuiViewport* viewport = ImGui::GetMainViewport();
 		ImVec2 workPos = viewport->WorkPos;
@@ -45,6 +42,19 @@ namespace UI {
 		ImGui::SetNextWindowViewport(viewport->ID);
 
 		ImGui::Begin("Scene Heirarchy", NULL, windowFlags);
+
+		if (ImGui::BeginMenuBar()) {
+			if (ImGui::BeginMenu("Create SceneObject")) {
+				ImGui::SeparatorText("2D");
+				if (ImGui::MenuItem("Triangle"))
+					ObjectManager::AddObjectToScene(ObjectType::TRIANGLE, "Triangle");
+				ImGui::SeparatorText("3D");
+				if (ImGui::MenuItem("Cube"))
+					ObjectManager::AddObjectToScene(ObjectType::CUBE, "Cube");
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
 
 		ObjectMap::iterator itr = ObjectManager::GetBegin();
 		while (itr != ObjectManager::GetEnd()) {
@@ -130,5 +140,9 @@ namespace UI {
 
 		ImGui::SeparatorText("Attributes");
 		ImGui::ColorEdit3("color", ObjectManager::GetColorRef(id));
+	}
+
+	bool* ShowOverlay() {
+		return &showOverlay;
 	}
 }

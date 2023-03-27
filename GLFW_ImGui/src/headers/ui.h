@@ -11,4 +11,6 @@ namespace UI {
 	void ShowSceneHeirarchy();
 	void ShowInspector();
 	void PopulateInspector(int id);
+
+	bool* ShowOverlay();
 }

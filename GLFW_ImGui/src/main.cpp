@@ -5,6 +5,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <numbers>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 #include <map>
 
 #include "utilities/stb_image.h"
@@ -91,6 +93,9 @@ void scroll_callback(GLFWwindow* window, double xOffset, double yOffset);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void processInput(GLFWwindow* window);
 void capture_mouse(GLFWwindow* window, bool mouseCaptured);
+
+// helpers
+std::string convertVec3ToString(glm::vec3 vec);
 
 int main(int argc, char* argv) {
 #pragma region Init
@@ -201,17 +206,6 @@ int main(int argc, char* argv) {
 	// enable depth testing
 	glEnable(GL_DEPTH_TEST);
 
-	struct SceneObject {
-		float position[3] = { 0.0f, 0.0f, 0.0f };
-		float rotation = 0.0f;
-		float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	};
-
-	std::map<int, SceneObject> objects2D;
-	std::map<int, SceneObject> objects3D;
-	int numObjects2D = 0;
-	int numObjects3D = 0;
-
 	// application loop
 	while (!glfwWindowShouldClose(window)) {
 		processInput(window);
@@ -233,17 +227,43 @@ int main(int argc, char* argv) {
 		UI::ShowSceneHeirarchy();
 		UI::ShowInspector();
 
-		ImGui::BeginMainMenuBar();
-		std::string viewDirection = "(" + std::to_string(camera.Front.x) + ", " + std::to_string(camera.Front.y) + ", " + std::to_string(camera.Front.z) + ")";
-		ImGui::Text(viewDirection.c_str());
-		ImGui::EndMainMenuBar();
+#pragma region Debug
+		if (*UI::ShowOverlay()) {
+			ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration |
+				ImGuiWindowFlags_NoDocking |
+				ImGuiWindowFlags_AlwaysAutoResize |
+				ImGuiWindowFlags_NoSavedSettings |
+				ImGuiWindowFlags_NoFocusOnAppearing |
+				ImGuiWindowFlags_NoNav |
+				ImGuiWindowFlags_NoMove;
+			const ImGuiViewport* viewport = ImGui::GetMainViewport();
+			ImVec2 workPos = viewport->WorkPos;
+			ImVec2 workSize = viewport->WorkSize;
+			ImVec2 windowPos, windowPosPivot;
+			windowPos = ImVec2(workPos.x + workSize.x, workPos.y + workSize.y);
+			windowPosPivot = ImVec2(1.0f, 1.0f);
+			ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always, windowPosPivot);
+			ImGui::SetNextWindowViewport(viewport->ID);
 
+			if (ImGui::Begin("Debug Overlay", UI::ShowOverlay(), windowFlags)) {
+				ImGui::Text("Camera View: ");
+				ImGui::SameLine();
+				ImGui::Text(convertVec3ToString(camera.Front).c_str());
+
+				ImGui::Text("Light Direction: ");
+				ImGui::SameLine();
+				ImGui::Text(convertVec3ToString(glm::vec3(-1.0f, 0.0f, 0.0f)).c_str());
+			}
+			ImGui::End();
+		}
+#pragma endregion Debug
+
+#pragma region RenderObjects
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, container.GetDiffuse());
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, container.GetSpecular());
 
-#pragma region RenderObjects
 		ObjectMap::iterator itr = ObjectManager::GetBegin();
 		while (itr != ObjectManager::GetEnd()) {
 			model = glm::mat4(1.0f);
@@ -370,4 +390,19 @@ void capture_mouse(GLFWwindow* window, bool mouseCaptured) {
 		glfwSetScrollCallback(window, NULL);
 		firstMouse = true;
 	}
+}
+
+std::string convertVec3ToString(glm::vec3 vec) {
+	std::stringstream ss;
+	ss << std::fixed << std::setprecision(2);
+	std::string output = "(";
+	for (int i = 0; i < 3; ++i) {
+		ss << vec[i];
+		output += ss.str();
+		if (i < 2)
+			output += ", ";
+		ss.str("");
+	}
+	output += ")";
+	return output;
 }
