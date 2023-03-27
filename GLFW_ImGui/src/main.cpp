@@ -229,7 +229,9 @@ int main(int argc, char* argv) {
 		glm::mat4 projection;
 		projection = glm::perspective(glm::radians(camera.Zoom), screenWidth / screenHeight, 0.1f, 100.0f);
 
+		UI::ShowMenu();
 		UI::ShowSceneHeirarchy();
+		UI::ShowInspector();
 		/*
 		ImGui::Begin("Scene Heirarchy");
 		
