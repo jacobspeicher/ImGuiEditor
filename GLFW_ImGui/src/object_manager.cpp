@@ -63,18 +63,25 @@ namespace ObjectManager {
 		return glm::vec3(objects.at(id).position[0], objects.at(id).position[1], objects.at(id).position[2]); 
 	}
 
-	glm::vec3 GetColor(const ObjectMap::iterator& itr) { 
-		return glm::vec3(itr->second.color[0], itr->second.color[1], itr->second.color[2]); 
+	glm::vec3 GetRotation(const ObjectMap::iterator& itr) { 
+		return glm::vec3(itr->second.rotation[0], itr->second.rotation[1], itr->second.rotation[2]);
 	}
-	glm::vec3 GetColor(int id) { 
-		return glm::vec3(objects.at(id).position[0], objects.at(id).position[1], objects.at(id).position[2]); 
+	glm::vec3 GetRotation(int id) { 
+		return glm::vec3(objects.at(id).rotation[0], objects.at(id).rotation[1], objects.at(id).rotation[2]);
 	}
 
-	float GetRotation(const ObjectMap::iterator& itr) { 
-		return itr->second.rotation; 
+	glm::vec3 GetScale(const ObjectMap::iterator& itr) {
+		return glm::vec3(itr->second.scale[0], itr->second.scale[1], itr->second.scale[2]);
 	}
-	float GetRotation(int id) { 
-		return objects.at(id).rotation; 
+	glm::vec3 GetScale(int id) {
+		return glm::vec3(objects.at(id).scale[0], objects.at(id).scale[1], objects.at(id).scale[2]);
+	}
+
+	glm::vec3 GetColor(const ObjectMap::iterator& itr) {
+		return glm::vec3(itr->second.color[0], itr->second.color[1], itr->second.color[2]);
+	}
+	glm::vec3 GetColor(int id) {
+		return glm::vec3(objects.at(id).position[0], objects.at(id).position[1], objects.at(id).position[2]);
 	}
 #pragma endregion Getters
 
@@ -94,10 +101,17 @@ namespace ObjectManager {
 	}
 
 	float* GetRotationRef(const ObjectMap::iterator& itr) {
-		return &itr->second.rotation;
+		return itr->second.rotation;
 	}
 	float* GetRotationRef(int id) {
-		return &objects.at(id).rotation;
+		return objects.at(id).rotation;
+	}
+
+	float* GetScaleRef(const ObjectMap::iterator& itr) {
+		return itr->second.scale;
+	}
+	float* GetScaleRef(int id) {
+		return objects.at(id).scale;
 	}
 
 	float* GetColorRef(const ObjectMap::iterator& itr) {

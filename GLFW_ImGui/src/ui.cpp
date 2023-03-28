@@ -134,9 +134,9 @@ namespace UI {
 
 		ImGui::SeparatorText("Transform");
 
-		ImGui::SliderFloat("rotation", ObjectManager::GetRotationRef(id), 0, 2 * std::numbers::pi);
 		ImGui::SliderFloat3("position", ObjectManager::GetPositionRef(id), -1.0, 1.0);
-		// ImGui::SliderFloat3("Scale");
+		ImGui::SliderFloat3("rotation", ObjectManager::GetRotationRef(id), 0, 2 * std::numbers::pi);
+		ImGui::SliderFloat3("scale", ObjectManager::GetScaleRef(id), 0.0, 5.0);
 
 		ImGui::SeparatorText("Attributes");
 		ImGui::ColorEdit3("color", ObjectManager::GetColorRef(id));

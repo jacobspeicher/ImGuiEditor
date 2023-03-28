@@ -19,7 +19,9 @@ struct SceneObject {
 	bool visible;
 
 	float position[3] = { 0.0f, 0.0f, 0.0f };
-	float rotation = 0.0f;
+	float rotation[3] = { 0.0f, 0.0f, 0.0f };
+	float scale[3] = { 1.0f, 1.0f, 1.0f };
+
 	float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 };
 
@@ -51,11 +53,14 @@ namespace ObjectManager {
 	glm::vec3 GetPosition(const ObjectMap::iterator& itr);
 	glm::vec3 GetPosition(int id);
 
+	glm::vec3 GetRotation(const ObjectMap::iterator& itr);
+	glm::vec3 GetRotation(int id);
+
+	glm::vec3 GetScale(const ObjectMap::iterator& itr);
+	glm::vec3 GetScale(int id);
+
 	glm::vec3 GetColor(const ObjectMap::iterator& itr);
 	glm::vec3 GetColor(int id);
-
-	float GetRotation(const ObjectMap::iterator& itr);
-	float GetRotation(int id);
 
 	// object property references (for imgui controls)
 	bool* GetVisibleRef(const ObjectMap::iterator& itr);
@@ -66,6 +71,9 @@ namespace ObjectManager {
 
 	float* GetRotationRef(const ObjectMap::iterator& itr);
 	float* GetRotationRef(int id);
+
+	float* GetScaleRef(const ObjectMap::iterator& itr);
+	float* GetScaleRef(int id);
 
 	float* GetColorRef(const ObjectMap::iterator& itr);
 	float* GetColorRef(int id);

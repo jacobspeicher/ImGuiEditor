@@ -277,7 +277,13 @@ int main(int argc, char* argv) {
 		while (itr != ObjectManager::GetEnd()) {
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, ObjectManager::GetPosition(itr));
-			model = glm::rotate(model, ObjectManager::GetRotation(itr), glm::vec3(0.0f, 0.0f, 1.0f));
+
+			glm::vec3 rotation = ObjectManager::GetRotation(itr);
+			model = glm::rotate(model, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+			model = glm::rotate(model, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+			model = glm::rotate(model, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+
+			model = glm::scale(model, ObjectManager::GetScale(itr));
 
 			switch (ObjectManager::GetType(itr)) {
 			case ObjectType::TRIANGLE:
@@ -305,7 +311,7 @@ int main(int argc, char* argv) {
 		}
 #pragma endregion RenderObjects
 
-		ImGui::ShowDemoWindow();
+		//ImGui::ShowDemoWindow();
 
 		// render imgui to the screen
 		ImGui::Render();
