@@ -195,10 +195,10 @@ int main(int argc, char* argv) {
 	basicShader.Use();
 	basicShader.SetInt("material.diffuse", 0);
 	basicShader.SetInt("material.specular", 1);
-	basicShader.SetInt("material.shininess", 32.0f);
-	basicShader.SetVec3("dirLight.direction", glm::vec3(-1.0f, 0.0f, 0.0f));
-	basicShader.SetVec3("dirLight.ambient", glm::vec3(0.5f));
-	basicShader.SetVec3("dirLight.diffuse", glm::vec3(0.2f));
+	basicShader.SetInt("material.shininess", 256.0f);
+	basicShader.SetVec3("dirLight.direction", glm::vec3(-1.0f, -1.0f, 0.0f));
+	basicShader.SetVec3("dirLight.ambient", glm::vec3(0.2f));
+	basicShader.SetVec3("dirLight.diffuse", glm::vec3(0.5f));
 	basicShader.SetVec3("dirLight.specular", glm::vec3(0.1f));
 #pragma endregion Shader
 
@@ -253,6 +253,15 @@ int main(int argc, char* argv) {
 				ImGui::Text("Light Direction: ");
 				ImGui::SameLine();
 				ImGui::Text(convertVec3ToString(glm::vec3(-1.0f, 0.0f, 0.0f)).c_str());
+
+				glm::vec3 reflect = glm::reflect(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+				float dotProduct = glm::dot(camera.Front, reflect);
+				ImGui::Text("reflect: ");
+				ImGui::SameLine();
+				ImGui::Text(convertVec3ToString(reflect).c_str());
+				ImGui::Text("(viewDir)x(reflect) Dot Product: ");
+				ImGui::SameLine();
+				ImGui::Text(std::to_string(dotProduct).c_str());
 			}
 			ImGui::End();
 		}
