@@ -226,9 +226,10 @@ int main(int argc, char* argv) {
 		UI::ShowMenu();
 		UI::ShowSceneHeirarchy();
 		UI::ShowInspector();
+		UI::ShowFileDialog();
 
 #pragma region Debug
-		if (*UI::ShowOverlay()) {
+		if (*UI::ShouldShowOverlay()) {
 			ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration |
 				ImGuiWindowFlags_NoDocking |
 				ImGuiWindowFlags_AlwaysAutoResize |
@@ -245,7 +246,7 @@ int main(int argc, char* argv) {
 			ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always, windowPosPivot);
 			ImGui::SetNextWindowViewport(viewport->ID);
 
-			if (ImGui::Begin("Debug Overlay", UI::ShowOverlay(), windowFlags)) {
+			if (ImGui::Begin("Debug Overlay", UI::ShouldShowOverlay(), windowFlags)) {
 				ImGui::Text("Camera View: ");
 				ImGui::SameLine();
 				ImGui::Text(convertVec3ToString(camera.Front).c_str());
@@ -268,11 +269,6 @@ int main(int argc, char* argv) {
 #pragma endregion Debug
 
 #pragma region RenderObjects
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, container.GetDiffuse());
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, container.GetSpecular());
-
 		ObjectMap::iterator itr = ObjectManager::GetBegin();
 		while (itr != ObjectManager::GetEnd()) {
 			model = glm::mat4(1.0f);
@@ -285,6 +281,12 @@ int main(int argc, char* argv) {
 
 			model = glm::scale(model, ObjectManager::GetScale(itr));
 
+			Texture* texture = ObjectManager::GetTexture(itr);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, texture->GetDiffuse());
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, texture->GetSpecular());
+
 			switch (ObjectManager::GetType(itr)) {
 			case ObjectType::TRIANGLE:
 				glBindVertexArray(triangleVAO);
@@ -296,6 +298,7 @@ int main(int argc, char* argv) {
 				glDrawArrays(GL_TRIANGLES, 0, 3);
 				break;
 			case ObjectType::CUBE:
+
 				glBindVertexArray(cubeVAO);
 
 				basicShader.Use();
@@ -311,7 +314,7 @@ int main(int argc, char* argv) {
 		}
 #pragma endregion RenderObjects
 
-		//ImGui::ShowDemoWindow();
+		// ImGui::ShowDemoWindow();
 
 		// render imgui to the screen
 		ImGui::Render();

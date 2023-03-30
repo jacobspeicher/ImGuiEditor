@@ -3,12 +3,15 @@
 namespace UI {
 	static int selectedId = -1;
 	static bool showOverlay = false;
+	static ImGui::FileBrowser fileDialog;
 
 	void ShowMenu() {
 		if (ImGui::BeginMainMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
 				if (ImGui::MenuItem("New")) {}
-				if (ImGui::MenuItem("Open")) {}
+				if (ImGui::MenuItem("Open")) {
+					// fileDialog.Open();
+				}
 				if (ImGui::MenuItem("Save")) {}
 				if (ImGui::MenuItem("Save As")) {}
 				if (ImGui::MenuItem("Settings")) {}
@@ -69,6 +72,9 @@ namespace UI {
 				selectedId = id;
 			}
 			if (ImGui::BeginPopupContextItem()) {
+				if (ImGui::Button("Duplicate")) {
+					ObjectManager::AddObjectToScene(itr);
+				}
 				if (ImGui::Button("Delete")) {
 					if (itr == ObjectManager::GetBegin()) {
 						++itr;
@@ -122,6 +128,10 @@ namespace UI {
 		ImGui::End();
 	}
 
+	void ShowFileDialog() {
+		fileDialog.Display();
+	}
+
 	void PopulateInspector(int id) {
 		static char nameInput[256];
 		strcpy_s(nameInput, ObjectManager::GetName(id).c_str());
@@ -140,9 +150,15 @@ namespace UI {
 
 		ImGui::SeparatorText("Attributes");
 		ImGui::ColorEdit3("color", ObjectManager::GetColorRef(id));
+
+		ImGui::SeparatorText("Shader");
+		Texture* texture = ObjectManager::GetTexture(id);
+		ImGui::ImageButton(ImTextureID(texture->GetDiffuse()), ImVec2(100, 100));
+		ImGui::SameLine();
+		ImGui::Text("Diffuse Texture");
 	}
 
-	bool* ShowOverlay() {
+	bool* ShouldShowOverlay() {
 		return &showOverlay;
 	}
 }

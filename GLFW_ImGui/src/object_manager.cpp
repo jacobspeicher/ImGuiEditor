@@ -2,20 +2,44 @@
 
 namespace ObjectManager {
 	static ObjectMap objects;
+	static std::map<int, int> copies;
 	static int objectId = 0;
 
 	void AddObjectToScene(ObjectType type, std::string defaultName) {
+		//Texture texture("gray.jpg", "gray.jpg");
+
 		SceneObject object;
 		object.type = type;
 		object.name = defaultName;
+		//object.diffuse = texture.GetDiffuse();
+		//object.specular = texture.GetSpecular();
+
+		objects[objectId] = object;
+		copies[objectId] = 0;
+		++objectId;
+	}
+	void AddObjectToScene(const ObjectMap::iterator& itr) {
+		SceneObject object;
+		copies[GetId(itr)]++;
+
+		object.type = itr->second.type;
+		object.name = itr->second.name + " " + std::to_string(copies[GetId(itr)]);
+		object.visible = itr->second.visible;
+		std::copy(std::begin(itr->second.position), std::end(itr->second.position), std::begin(object.position));
+		std::copy(std::begin(itr->second.rotation), std::end(itr->second.rotation), std::begin(object.rotation));
+		std::copy(std::begin(itr->second.scale), std::end(itr->second.scale), std::begin(object.scale));
+		std::copy(std::begin(itr->second.color), std::end(itr->second.color), std::begin(object.color));
+
 		objects[objectId] = object;
 		++objectId;
 	}
 
 	void RemoveObjectFromScene(const ObjectMap::iterator& itr) {
+		delete itr->second.texture;
 		objects.erase(itr);
 	}
 	void RemoveObjectFromScene(int id) {
+		delete objects.at(id).texture;
 		objects.erase(id);
 	}
 
@@ -83,6 +107,13 @@ namespace ObjectManager {
 	glm::vec3 GetColor(int id) {
 		return glm::vec3(objects.at(id).position[0], objects.at(id).position[1], objects.at(id).position[2]);
 	}
+
+	Texture* GetTexture(const ObjectMap::iterator& itr) {
+		return itr->second.texture;
+	}
+	Texture* GetTexture(int id) {
+		return objects.at(id).texture;
+	}
 #pragma endregion Getters
 
 #pragma region ReferenceGetters
@@ -128,6 +159,20 @@ namespace ObjectManager {
 	}
 	void SetName(int id, std::string nameInput) {
 		objects.at(id).name = nameInput;
+	}
+
+	void SetDiffuse(const ObjectMap::iterator& itr, std::string diffuseFile) {
+		itr->second.texture->SetDiffuse(diffuseFile);
+	}
+	void SetDiffuse(int id, std::string diffuseFile) {
+		objects.at(id).texture->SetDiffuse(diffuseFile);
+	}
+
+	void SetSpecular(const ObjectMap::iterator& itr, std::string specularFile) {
+		itr->second.texture->SetSpecular(specularFile);
+	}
+	void SetSpecular(int id, std::string specularFile) {
+		objects.at(id).texture->SetDiffuse(specularFile);
 	}
 #pragma endregion Setters
 }

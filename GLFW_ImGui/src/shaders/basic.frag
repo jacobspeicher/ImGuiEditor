@@ -24,19 +24,19 @@ uniform DirLight dirLight;
 
 out vec4 FragColor;
 
-vec3 CalcDirLight(DirLight light, vec3 Normal, vec3 viewDir);
+vec4 CalcDirLight(DirLight light, vec3 Normal, vec3 viewDir);
 
 void main() {
 	// properties
 	vec3 norm = normalize(Normal);
 	vec3 viewDir = normalize(viewPos - FragPos);
 
-	vec3 result = CalcDirLight(dirLight, norm, viewDir);
+	vec4 result = CalcDirLight(dirLight, norm, viewDir);
 
-	FragColor = vec4(result, 1.0f);
+	FragColor = result;
 }
 
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
+vec4 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 {
 	vec3 lightDir = normalize(-light.direction);
 	
@@ -48,9 +48,9 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0f), material.shininess);
 
 	// combine results
-	vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
-	vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
-	vec3 specular = light.specular * vec3(texture(material.specular, TexCoords));
+	vec4 ambient = vec4(light.ambient, 1.0f) * vec4(texture(material.diffuse, TexCoords));
+	vec4 diffuse = vec4(light.diffuse, 1.0f) * diff * vec4(texture(material.diffuse, TexCoords));
+	// vec4 specular = light.specular * vec4(texture(material.specular, TexCoords));
 
-	return (vec3(ambient + diffuse));
+	return (vec4(ambient + diffuse));
 }
