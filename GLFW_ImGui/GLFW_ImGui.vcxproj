@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\assets_manager.cpp" />
     <ClCompile Include="src\imgui\imgui.cpp" />
     <ClCompile Include="src\imgui\imgui_demo.cpp" />
     <ClCompile Include="src\imgui\imgui_draw.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="src\utilities\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\headers\assets_manager.h" />
     <ClInclude Include="src\headers\camera.h" />
     <ClInclude Include="src\headers\imfilebrowser.h" />
     <ClInclude Include="src\imgui\imconfig.h" />

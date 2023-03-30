@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <map>
 #include <string>
-#include "headers/texture.h"
+#include "texture.h"
 
 enum class ObjectType {
 	// 2D
@@ -24,8 +24,6 @@ struct SceneObject {
 	float scale[3] = { 1.0f, 1.0f, 1.0f };
 
 	float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-	Texture* texture = new Texture("gray.jpg", "gray.jpg");
 };
 
 typedef std::map<int, SceneObject> ObjectMap;
@@ -66,9 +64,6 @@ namespace ObjectManager {
 	glm::vec3 GetColor(const ObjectMap::iterator& itr);
 	glm::vec3 GetColor(int id);
 
-	Texture* GetTexture(const ObjectMap::iterator& itr);
-	Texture* GetTexture(int id);
-
 	// object property references (for imgui controls)
 	bool* GetVisibleRef(const ObjectMap::iterator& itr);
 	bool* GetVisibleRef(int id);
@@ -88,12 +83,6 @@ namespace ObjectManager {
 	// object property setters
 	void SetName(const ObjectMap::iterator& itr, std::string nameInput);
 	void SetName(int id, std::string nameInput);
-
-	void SetDiffuse(const ObjectMap::iterator& itr, std::string diffuseFile);
-	void SetDiffuse(int id, std::string diffuseFile);
-
-	void SetSpecular(const ObjectMap::iterator& itr, std::string specularFile);
-	void SetSpecular(int id, std::string specularFile);
 }
 
 #endif

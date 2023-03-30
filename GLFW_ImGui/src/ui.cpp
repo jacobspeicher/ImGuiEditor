@@ -121,10 +121,20 @@ namespace UI {
 
 		if (ImGui::BeginMenuBar()) {
 			if (ImGui::BeginMenu("Create Asset")) {
-				if (ImGui::MenuItem("Material")) {}
+				if (ImGui::MenuItem("Material")) {
+					AssetsManager::CreateMaterial();
+				}
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();
+		}
+
+		MaterialMap::iterator itr = AssetsManager::GetMaterialsBegin();
+		while (itr != AssetsManager::GetMaterialsEnd()) {
+			std::string label = AssetsManager::GetMaterialName(itr);
+
+			if (ImGui::Selectable(label.c_str(), false)) {}
+			++itr;
 		}
 
 		ImGui::End();
@@ -181,8 +191,6 @@ namespace UI {
 		ImGui::ColorEdit3("color", ObjectManager::GetColorRef(id));
 
 		ImGui::SeparatorText("Shader");
-		Texture* texture = ObjectManager::GetTexture(id);
-		ImGui::ImageButton(ImTextureID(texture->GetDiffuse()), ImVec2(100, 100));
 		ImGui::SameLine();
 		ImGui::Text("Diffuse Texture");
 	}

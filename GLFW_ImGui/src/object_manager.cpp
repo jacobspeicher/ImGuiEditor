@@ -6,13 +6,9 @@ namespace ObjectManager {
 	static int objectId = 0;
 
 	void AddObjectToScene(ObjectType type, std::string defaultName) {
-		//Texture texture("gray.jpg", "gray.jpg");
-
 		SceneObject object;
 		object.type = type;
 		object.name = defaultName;
-		//object.diffuse = texture.GetDiffuse();
-		//object.specular = texture.GetSpecular();
 
 		objects[objectId] = object;
 		copies[objectId] = 0;
@@ -35,11 +31,9 @@ namespace ObjectManager {
 	}
 
 	void RemoveObjectFromScene(const ObjectMap::iterator& itr) {
-		delete itr->second.texture;
 		objects.erase(itr);
 	}
 	void RemoveObjectFromScene(int id) {
-		delete objects.at(id).texture;
 		objects.erase(id);
 	}
 
@@ -107,13 +101,6 @@ namespace ObjectManager {
 	glm::vec3 GetColor(int id) {
 		return glm::vec3(objects.at(id).position[0], objects.at(id).position[1], objects.at(id).position[2]);
 	}
-
-	Texture* GetTexture(const ObjectMap::iterator& itr) {
-		return itr->second.texture;
-	}
-	Texture* GetTexture(int id) {
-		return objects.at(id).texture;
-	}
 #pragma endregion Getters
 
 #pragma region ReferenceGetters
@@ -159,20 +146,6 @@ namespace ObjectManager {
 	}
 	void SetName(int id, std::string nameInput) {
 		objects.at(id).name = nameInput;
-	}
-
-	void SetDiffuse(const ObjectMap::iterator& itr, std::string diffuseFile) {
-		itr->second.texture->SetDiffuse(diffuseFile);
-	}
-	void SetDiffuse(int id, std::string diffuseFile) {
-		objects.at(id).texture->SetDiffuse(diffuseFile);
-	}
-
-	void SetSpecular(const ObjectMap::iterator& itr, std::string specularFile) {
-		itr->second.texture->SetSpecular(specularFile);
-	}
-	void SetSpecular(int id, std::string specularFile) {
-		objects.at(id).texture->SetDiffuse(specularFile);
 	}
 #pragma endregion Setters
 }

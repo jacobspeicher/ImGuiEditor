@@ -8,6 +8,11 @@
 
 class Texture {
 public:
+	Texture() {
+		diffuse = NULL;
+		specular = NULL;
+	}
+
 	Texture(std::string diffuseFile, std::string specularFile) {
 		stbi_set_flip_vertically_on_load(true);
 
@@ -50,22 +55,13 @@ public:
 		stbi_image_free(data);
 	}
 
-	void SetDiffuse(std::string diffuseFile) {
-		diffuse = loadTexture(diffuseFile);
-	}
-
-	void SetSpecular(std::string specularFile) {
-		specular = loadTexture(specularFile);
-	}
-
-	GLuint loadTexture(std::string textureFile) {
-		GLuint texture;
+	void loadTexture(std::string textureFile, GLuint& outTexture) {
 		stbi_set_flip_vertically_on_load(true);
 
 		int width, height, numChannels;
 		unsigned char* data;
 
-		glGenTextures(1, &texture);
+		glGenTextures(1, &outTexture);
 		glBindTexture(GL_TEXTURE_2D, diffuse);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -81,7 +77,6 @@ public:
 		}
 
 		stbi_image_free(data);
-		return texture;
 	}
 
 	GLuint GetDiffuse() {

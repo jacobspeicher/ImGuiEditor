@@ -3,6 +3,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "headers/imfilebrowser.h"
 #include "headers/object_manager.h"
+#include "headers/assets_manager.h"
 
 #include <string>
 #include <numbers>

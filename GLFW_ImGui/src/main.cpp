@@ -282,11 +282,10 @@ int main(int argc, char* argv) {
 
 			model = glm::scale(model, ObjectManager::GetScale(itr));
 
-			Texture* texture = ObjectManager::GetTexture(itr);
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, texture->GetDiffuse());
+			glBindTexture(GL_TEXTURE_2D, container.GetDiffuse());
 			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, texture->GetSpecular());
+			glBindTexture(GL_TEXTURE_2D, container.GetSpecular());
 
 			switch (ObjectManager::GetType(itr)) {
 			case ObjectType::TRIANGLE:
