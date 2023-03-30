@@ -226,6 +226,7 @@ int main(int argc, char* argv) {
 		UI::ShowMenu();
 		UI::ShowSceneHeirarchy();
 		UI::ShowInspector();
+		UI::ShowAssets();
 		UI::ShowFileDialog();
 
 #pragma region Debug

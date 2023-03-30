@@ -11,6 +11,7 @@
 namespace UI {
 	void ShowMenu();
 	void ShowSceneHeirarchy();
+	void ShowAssets();
 	void ShowInspector();
 	void ShowFileDialog();
 

@@ -41,10 +41,10 @@ namespace UI {
 		ImVec2 workSize = viewport->WorkSize;
 		ImVec2 windowPos = workPos;
 		ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always);
-		ImGui::SetNextWindowSize(ImVec2(300, workSize.y));
+		ImGui::SetNextWindowSize(ImVec2(300, workSize.y / 2));
 		ImGui::SetNextWindowViewport(viewport->ID);
 
-		ImGui::Begin("Scene Heirarchy", NULL, windowFlags);
+		ImGui::Begin("Scene Hierarchy", NULL, windowFlags);
 
 		if (ImGui::BeginMenuBar()) {
 			if (ImGui::BeginMenu("Create SceneObject")) {
@@ -96,6 +96,35 @@ namespace UI {
 			}
 
 			++itr;
+		}
+
+		ImGui::End();
+	}
+
+	void ShowAssets() {
+		ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoMove |
+			ImGuiWindowFlags_NoCollapse |
+			ImGuiWindowFlags_NoResize |
+			ImGuiWindowFlags_MenuBar;
+
+		const ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImVec2 workPos = viewport->WorkPos;
+		ImVec2 workSize = viewport->WorkSize;
+		ImVec2 windowPos, windowPosPivot;
+		windowPos = ImVec2(workPos.x, workPos.y + workSize.y);
+		windowPosPivot = ImVec2(0.0f, 1.0f);
+		ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always, windowPosPivot);
+		ImGui::SetNextWindowSize(ImVec2(300, workSize.y / 2));
+		ImGui::SetNextWindowViewport(viewport->ID);
+
+		ImGui::Begin("Assets", NULL, windowFlags);
+
+		if (ImGui::BeginMenuBar()) {
+			if (ImGui::BeginMenu("Create Asset")) {
+				if (ImGui::MenuItem("Material")) {}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
 		}
 
 		ImGui::End();
